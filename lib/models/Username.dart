@@ -20,8 +20,8 @@ setName(String x){
   prefs.setString("user", x);
   name = x;
   notifyListeners();
-
 }
+
 getName(){
   return name;
 }

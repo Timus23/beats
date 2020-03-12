@@ -1,9 +1,12 @@
 import 'package:beats/Animations/transitions.dart';
-import 'package:beats/Models/PlayListHelper.dart';
+import 'package:beats/models/PlayListHelper.dart';
 import 'package:beats/models/PlaylistRepo.dart';
 import 'package:beats/models/ThemeModel.dart';
 import 'package:beats/models/BookmarkModel.dart';
+import 'package:beats/models/Username.dart';
+import 'package:beats/models/adCounter.dart';
 import 'package:beats/models/const.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flute_music_player/flute_music_player.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -14,12 +17,21 @@ import 'Player.dart';
 
 double height, width;
 
-class Library extends StatelessWidget {
+class Library extends StatefulWidget {
+  @override
+  _LibraryState createState() => _LibraryState();
+}
+
+class _LibraryState extends State<Library> {
   TextEditingController editingController;
+
+  AdCounter adCounter;
 
   SongsModel model;
 
   BookmarkModel b;
+
+  bool showAds = false;
 
   ThemeChanger themeChanger;
 
@@ -27,10 +39,49 @@ class Library extends StatelessWidget {
 
   bool error = false;
 
+  bool init = true;
+
+  InterstitialAd interstitialAd;
+
+  InterstitialAd createInterstitialAd() {
+    return new InterstitialAd(
+        adUnitId: "ca-app-pub-2752734387105422/4949443778",
+        targetingInfo: targetingInfo,
+        listener: (MobileAdEvent event) {
+          print("Interstitial event : $event");
+          if (event == MobileAdEvent.closed) {
+            model?.play();
+          }
+        });
+  }
+
+  MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['music', 'songs'],
+    childDirected: true,
+    testDevices: <String>[], // Android emulators are considered test devices
+  );
+
+  @override
+  void dispose() {
+    interstitialAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (init) {
+      String name = Provider.of<Username>(context).getName();
+      showAds = name.toLowerCase() != "admin";
+      init = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     model = Provider.of<SongsModel>(context);
     b = Provider.of<BookmarkModel>(context);
+    adCounter = Provider.of<AdCounter>(context);
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     themeChanger = Provider.of<ThemeChanger>(context);
@@ -231,10 +282,16 @@ class Library extends StatelessWidget {
                   model.player.stop();
                   model.playlist = false;
                   model.currentSong = model.songs[pos];
-                  
-
                   //Reset the list. So we can change to next song.
-                  model.play();
+                  adCounter.increaseCount();
+                  if ((adCounter.getCount % 4) == 0 && showAds) {
+                    interstitialAd = createInterstitialAd();
+                    await interstitialAd.load();
+                    await interstitialAd.show();
+                    // model.play();
+                  } else {
+                    model.play();
+                  }
                 },
                 leading: CircleAvatar(child: getImage(model, pos)),
                 title: Text(
@@ -364,10 +421,7 @@ class Library extends StatelessWidget {
                             if (model.currentState == PlayerState.PAUSED ||
                                 model.currentState == PlayerState.STOPPED) {
                               model.play();
-
-                            
                             } else {
-                             
                               model.pause();
                             }
                           },

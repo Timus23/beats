@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:beats/Models/Username.dart';
 import 'package:beats/models/PlaylistRepo.dart';
 import 'package:beats/models/BookmarkModel.dart';
 import 'package:beats/models/Now_Playing.dart';
+import 'package:beats/models/adCounter.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'models/RecentsModel.dart';
 import 'models/SongsModel.dart';
@@ -15,31 +16,46 @@ import './screens/MainScreen.dart';
 import 'models/ThemeModel.dart';
 import 'package:beats/models/ProgressModel.dart';
 
+import 'models/Username.dart';
+
 void main(List<String> args) {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseAdMob.instance
+      .initialize(appId: "ca-app-pub-2752734387105422~3935745002");
   var prov = ProgressModel();
   var rec = Recents();
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider<BookmarkModel>(
-      builder: (context) => BookmarkModel(),
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<BookmarkModel>(
+          builder: (context) => BookmarkModel(),
+        ),
+        ChangeNotifierProvider<PlaylistRepo>(
+          builder: (context) => PlaylistRepo(),
+        ),
+        ChangeNotifierProvider<Username>(
+          builder: (context) => Username(),
+        ),
+        ChangeNotifierProvider<Recents>(
+          builder: (context) => rec,
+        ),
+        ChangeNotifierProvider<ProgressModel>(
+          builder: (context) => prov,
+        ),
+        ChangeNotifierProvider<SongsModel>(
+          builder: (context) => SongsModel(prov, rec),
+        ),
+        ChangeNotifierProvider<ThemeChanger>(
+            builder: (context) => ThemeChanger()),
+        ChangeNotifierProvider<NowPlaying>(
+            builder: (context) => NowPlaying(false)),
+        ChangeNotifierProvider<AdCounter>(
+          builder: (context) => AdCounter(),
+        ),
+      ],
+      child: MyApp(),
     ),
-    ChangeNotifierProvider<PlaylistRepo>(
-      builder: (context) => PlaylistRepo(),
-    ),
-    ChangeNotifierProvider<Username>(
-      builder: (context) => Username(),
-    ),
-    ChangeNotifierProvider<Recents>(
-      builder: (context) => rec,
-    ),
-    ChangeNotifierProvider<ProgressModel>(
-      builder: (context) => prov,
-    ),
-    ChangeNotifierProvider<SongsModel>(
-      builder: (context) => SongsModel(prov, rec),
-    ),
-    ChangeNotifierProvider<ThemeChanger>(builder: (context) => ThemeChanger()),
-    ChangeNotifierProvider<NowPlaying>(builder: (context) => NowPlaying(false))
-  ], child: MyApp()));
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -53,7 +69,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     MediaNotification.setListener('pause', () {
-      setState((){
+      setState(() {
         model.pause();
       });
     });
@@ -67,7 +83,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     MediaNotification.setListener('prev', () {
-      setState((){
+      setState(() {
         model.player.stop();
         model.previous();
         model.play();

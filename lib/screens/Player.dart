@@ -5,7 +5,9 @@ import 'package:beats/models/PlaylistRepo.dart';
 import 'package:beats/models/BookmarkModel.dart';
 import 'package:beats/models/PlayListHelper.dart';
 import 'package:beats/models/Now_Playing.dart';
+import 'package:beats/models/Username.dart';
 import 'package:beats/screens/MusicLibrary.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import '../custom_icons.dart';
@@ -24,11 +26,28 @@ class _PlayBackPageState extends State<PlayBackPage> {
   PageController pg;
   NowPlaying playScreen;
   int currentPage = 1;
+  BannerAd _bannerAd;
+  bool init = true;
+
+  MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['music', 'songs'],
+    childDirected: true,
+    testDevices: <String>[], // Android emulators are considered test devices
+  );
+
+  BannerAd createBannerAd() {
+    return new BannerAd(
+        adUnitId: "ca-app-pub-2752734387105422/5844730493",
+        size: AdSize.banner,
+        targetingInfo: targetingInfo,
+        listener: (MobileAdEvent event) {
+          print("Banner event : $event");
+        });
+  }
 
   @override
   void initState() {
     super.initState();
-
     pg = PageController(
         initialPage: currentPage, keepPage: true, viewportFraction: 0.95);
   }
@@ -36,6 +55,7 @@ class _PlayBackPageState extends State<PlayBackPage> {
   @override
   void dispose() {
     super.dispose();
+    _bannerAd?.dispose();
     pg.dispose();
   }
 
@@ -45,11 +65,24 @@ class _PlayBackPageState extends State<PlayBackPage> {
   List<String> playlist = new List();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (init) {
+      String user = Provider.of<Username>(context).getName();
+      if (user.toLowerCase() != "admin") {
+        _bannerAd = createBannerAd()
+          ..load()
+          ..show();
+      }
+      init = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     model = Provider.of<SongsModel>(context);
     playScreen = Provider.of<NowPlaying>(context);
     themeChanger = Provider.of<ThemeChanger>(context);
-
     if (playScreen.getScreen() == true) {
       return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -180,6 +213,9 @@ class _PlayBackPageState extends State<PlayBackPage> {
                                 },
                                 child: MaterialButton(
                                   elevation: 30,
+                                  onPressed: () {
+                                    //TODO
+                                  },
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(100.0)),
@@ -546,6 +582,9 @@ class _PlayBackPageState extends State<PlayBackPage> {
                               },
                               child: MaterialButton(
                                 elevation: 30,
+                                onPressed: () {
+                                  //TODO
+                                },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(100.0)),
                                 child: Container(

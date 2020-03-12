@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "1022945785690",
+    "firebase_url": "https://demoapp-7757b.firebaseio.com",
+    "project_id": "demoapp-7757b",
+    "storage_bucket": "demoapp-7757b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022945785690:android:748d84f84b487677fc2563",
+        "android_client_info": {
+          "package_name": "com.example.begnas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022945785690-smevc5uktd7cibmctofvfnvalo6tm9bl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXAoooX0nRCZBotm0MEUz-ZrzWbewAvDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022945785690-smevc5uktd7cibmctofvfnvalo6tm9bl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022945785690:android:af386d4ae16b1e20fc2563",
+        "android_client_info": {
+          "package_name": "com.example.demoApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022945785690-smevc5uktd7cibmctofvfnvalo6tm9bl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXAoooX0nRCZBotm0MEUz-ZrzWbewAvDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022945785690-smevc5uktd7cibmctofvfnvalo6tm9bl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022945785690:android:064c33f98c3a201ffc2563",
+        "android_client_info": {
+          "package_name": "in.selvasoft.beats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022945785690-smevc5uktd7cibmctofvfnvalo6tm9bl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXAoooX0nRCZBotm0MEUz-ZrzWbewAvDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022945785690-smevc5uktd7cibmctofvfnvalo6tm9bl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

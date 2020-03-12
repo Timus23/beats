@@ -223,6 +223,9 @@ class _PLayListScreenState extends State<PLayListScreen> {
                     height: 30,
                     width: 30,
                     child: FloatingActionButton(
+                      onPressed: (){
+                        //TODO
+                      },
                       child: (model.currentState == PlayerState.PAUSED ||
                               model.currentState == PlayerState.STOPPED)
                           ? Icon(
